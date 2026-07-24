@@ -52,8 +52,7 @@ python app.py
 앱 최초 실행 시 다음 관리자 계정이 생성됩니다.
 
 - 아이디: `admin`
-- 비밀번호: 환경 변수 `ADMIN_PASSWORD` 값
-- 환경 변수가 없으면 개발용 기본값 `ChangeMe123!`
+- 비밀번호: `ChangeMe123!`
 
 ## 데이터베이스
 
