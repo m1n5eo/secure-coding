@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>신고하기</h1>
+  <p>
+    대상:
+    {% if target_type == 'user' %}
+      사용자 {{ target.display_name }} (@{{ target.username }})
+    {% else %}
+      상품 {{ target.name }}
+    {% endif %}
+  </p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>신고 사유<textarea name="reason" minlength="5" maxlength="500" required></textarea></label>
+    <button class="btn danger" type="submit">신고 접수</button>
+  </form>
+</div>
+{% endblock %}

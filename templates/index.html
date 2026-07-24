@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}메인 - Tiny Market{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>작지만 안전한 중고거래 플랫폼</h1>
+  <p>상품을 등록하고, 대화하고, 플랫폼 포인트를 송금할 수 있습니다.</p>
+  <a class="btn" href="{{ url_for('products') }}">상품 둘러보기</a>
+</div>
+<h2>최근 상품</h2>
+<div class="grid">
+  {% for product in products %}
+    <div class="card">
+      {% if product.image_filename %}
+        <img class="product-img" src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="">
+      {% endif %}
+      <h3><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+      <strong>{{ "{:,}".format(product.price) }}원</strong>
+      <p class="muted">{{ product.seller.display_name }}</p>
+    </div>
+  {% else %}
+    <p>등록된 상품이 없습니다.</p>
+  {% endfor %}
+</div>
+{% endblock %}

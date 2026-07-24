@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>회원가입</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>아이디<input name="username" required minlength="4" maxlength="30"></label>
+    <label>계정명<input name="display_name" required minlength="2" maxlength="50"></label>
+    <label>비밀번호<input type="password" name="password" required minlength="8"></label>
+    <label>비밀번호 확인<input type="password" name="password_confirm" required minlength="8"></label>
+    <button type="submit">가입하기</button>
+  </form>
+</div>
+{% endblock %}

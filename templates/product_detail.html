@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>{{ product.name }}</h1>
+  {% if product.image_filename %}
+    <img class="product-img" src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="">
+  {% endif %}
+  <p>{{ product.description }}</p>
+  <h2>{{ "{:,}".format(product.price) }}원</h2>
+  <p>판매자: <a href="{{ url_for('user_profile', user_id=product.seller.id) }}">{{ product.seller.display_name }} (@{{ product.seller.username }})</a></p>
+  {% if current_user.is_authenticated %}
+    {% if current_user.id != product.seller_id %}
+      <a class="btn" href="{{ url_for('private_chat', user_id=product.seller.id) }}">판매자와 채팅</a>
+      <a class="btn danger" href="{{ url_for('report', target_type='product', target_id=product.id) }}">상품 신고</a>
+    {% else %}
+      <a class="btn secondary" href="{{ url_for('product_edit', product_id=product.id) }}">수정</a>
+      <form class="inline" method="post" action="{{ url_for('product_delete', product_id=product.id) }}" onsubmit="return confirm('삭제할까요?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn danger" type="submit">삭제</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

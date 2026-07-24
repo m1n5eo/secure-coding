@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}
+채팅 - Tiny Market
+{% endblock %}
+
+{% block content %}
+
+<div class="chat-layout">
+
+  <aside class="chat-sidebar">
+    <div class="card">
+      <h2>채팅 목록</h2>
+
+      <a
+        class="conversation-item {% if not partner %}active{% endif %}"
+        href="{{ url_for('public_chat') }}"
+      >
+        <div class="conversation-avatar">전체</div>
+
+        <div class="conversation-content">
+          <strong>전체 채팅방</strong>
+          <p>모든 사용자와 대화하기</p>
+        </div>
+      </a>
+
+      {% if conversations %}
+        <h3 class="conversation-title">1:1 채팅</h3>
+
+        {% for conversation in conversations %}
+          <a
+            class="conversation-item
+            {% if partner and partner.id == conversation.partner.id %}
+              active
+            {% endif %}"
+            href="{{ url_for(
+              'private_chat',
+              user_id=conversation.partner.id
+            ) }}"
+          >
+            <div class="conversation-avatar">
+              {{ conversation.partner.display_name[0] }}
+            </div>
+
+            <div class="conversation-content">
+              <strong>
+                {{ conversation.partner.display_name }}
+              </strong>
+
+              <span class="conversation-username">
+                @{{ conversation.partner.username }}
+              </span>
+
+              <p>
+                {% if conversation.last_message.sender_id == current_user.id %}
+                  나:
+                {% endif %}
+
+                {{ conversation.last_message.body[:30] }}
+
+                {% if conversation.last_message.body|length > 30 %}
+                  ...
+                {% endif %}
+              </p>
+
+              <small>
+                {{ conversation.last_message.created_at.strftime(
+                  "%Y-%m-%d %H:%M"
+                ) }}
+              </small>
+            </div>
+          </a>
+        {% endfor %}
+
+      {% elif not partner %}
+        <p class="muted">아직 1:1 채팅이 없습니다.</p>
+      {% endif %}
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <div class="card">
+
+      <div class="chat-header">
+        {% if partner %}
+          <h1>{{ partner.display_name }}님과의 채팅</h1>
+
+          <a href="{{ url_for(
+            'user_profile',
+            user_id=partner.id
+          ) }}">
+            @{{ partner.username }} 프로필 보기
+          </a>
+        {% else %}
+          <h1>전체 채팅</h1>
+          <p class="muted">
+            모든 사용자가 볼 수 있는 공개 채팅입니다.
+          </p>
+        {% endif %}
+      </div>
+
+      <div class="chat-box">
+        {% for message in messages %}
+
+          <div class="
+            chat-message
+            {% if message.sender_id == current_user.id %}
+              my-message
+            {% else %}
+              other-message
+            {% endif %}
+          ">
+
+            <div class="message-info">
+              <strong>
+                {% if message.sender_id == current_user.id %}
+                  나
+                {% else %}
+                  {{ message.sender.display_name }}
+                {% endif %}
+              </strong>
+
+              <span>
+                {{ message.created_at.strftime("%Y-%m-%d %H:%M") }}
+              </span>
+            </div>
+
+            <div class="message-bubble">
+              {{ message.body }}
+            </div>
+
+          </div>
+
+        {% else %}
+          <div class="empty-chat">
+            <p>아직 메시지가 없습니다.</p>
+            <p class="muted">첫 번째 메시지를 보내보세요.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form method="post" class="chat-form">
+        <input
+          type="hidden"
+          name="csrf_token"
+          value="{{ csrf_token() }}"
+        >
+
+        <textarea
+          name="body"
+          maxlength="1000"
+          required
+          placeholder="메시지를 입력하세요"
+          rows="3"
+        ></textarea>
+
+        <button type="submit">전송</button>
+      </form>
+
+    </div>
+  </section>
+
+</div>
+
+{% endblock %}

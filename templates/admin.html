@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>관리자 페이지</h1>
+
+<h2>사용자</h2>
+<div class="table-wrap">
+<table>
+<tr><th>ID</th><th>아이디</th><th>계정명</th><th>역할</th><th>상태</th><th>관리</th></tr>
+{% for user in users %}
+<tr>
+  <td>{{ user.id }}</td><td>{{ user.username }}</td><td>{{ user.display_name }}</td>
+  <td>{{ user.role }}</td><td>{{ user.status }}</td>
+  <td>
+    {% if user.role != 'admin' %}
+    <form method="post" action="{{ url_for('admin_toggle_user', user_id=user.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">{{ "활성화" if user.status != "active" else "휴면 전환" }}</button>
+    </form>
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<h2>상품</h2>
+<div class="table-wrap">
+<table>
+<tr><th>ID</th><th>상품명</th><th>판매자</th><th>상태</th><th>관리</th></tr>
+{% for product in products %}
+<tr>
+  <td>{{ product.id }}</td><td>{{ product.name }}</td><td>{{ product.seller.username }}</td><td>{{ product.status }}</td>
+  <td>
+    <form method="post" action="{{ url_for('admin_toggle_product', product_id=product.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">{{ "차단 해제" if product.status != "active" else "차단" }}</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<h2>신고 내역</h2>
+<div class="table-wrap">
+<table>
+<tr><th>ID</th><th>신고자</th><th>대상</th><th>사유</th><th>상태</th><th>관리</th></tr>
+{% for report in reports %}
+<tr>
+  <td>{{ report.id }}</td>
+  <td>{{ report.reporter.username }}</td>
+  <td>{{ report.target_type }} #{{ report.target_id }}</td>
+  <td>{{ report.reason }}</td>
+  <td>{{ "처리" if report.status == "processed" else "처리되지 않음" }}</td>
+  <td>
+    {% if report.status != "processed" %}
+    <form method="post" action="{{ url_for('admin_process_report', report_id=report.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit">처리 완료</button>
+    </form>
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>포인트 송금</h1>
+  <p>현재 잔액: <strong>{{ "{:,}".format(current_user.balance) }}원</strong></p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>받는 사람 아이디<input name="receiver_username" required></label>
+    <label>송금액<input type="number" name="amount" min="1" required></label>
+    <button type="submit">송금</button>
+  </form>
+  <p class="muted">교육용 내부 포인트 기능이며 실제 금융 송금이 아닙니다.</p>
+</div>
+{% endblock %}

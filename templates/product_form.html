@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>{{ "상품 수정" if product else "새 상품 등록" }}</h1>
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>상품명<input name="name" required maxlength="120" value="{{ product.name if product else '' }}"></label>
+    <label>설명<textarea name="description" rows="7" required>{{ product.description if product else '' }}</textarea></label>
+    <label>가격<input type="number" name="price" min="0" required value="{{ product.price if product else '' }}"></label>
+    <label>사진<input type="file" name="image" accept=".png,.jpg,.jpeg,.gif,.webp"></label>
+    <button type="submit">{{ "수정" if product else "등록" }}</button>
+  </form>
+</div>
+{% endblock %}

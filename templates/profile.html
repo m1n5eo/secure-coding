@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>{{ profile_user.display_name }} <span class="muted">@{{ profile_user.username }}</span></h1>
+  <p>{{ profile_user.bio or "소개글이 없습니다." }}</p>
+  <p>계정 상태: {{ profile_user.status }}</p>
+  {% if current_user.is_authenticated and current_user.id != profile_user.id %}
+    <a class="btn" href="{{ url_for('private_chat', user_id=profile_user.id) }}">1:1 채팅</a>
+    <a class="btn danger" href="{{ url_for('report', target_type='user', target_id=profile_user.id) }}">사용자 신고</a>
+  {% endif %}
+</div>
+<h2>등록 상품</h2>
+<div class="grid">
+{% for product in products %}
+  <div class="card">
+    <h3><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+    <p>{{ "{:,}".format(product.price) }}원</p>
+  </div>
+{% else %}
+  <p>등록 상품이 없습니다.</p>
+{% endfor %}
+</div>
+{% endblock %}

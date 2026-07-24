@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>마이페이지</h1>
+  <p>잔액: <strong>{{ "{:,}".format(current_user.balance) }}원</strong></p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>계정명<input name="display_name" value="{{ current_user.display_name }}" required maxlength="50"></label>
+    <label>소개글<textarea name="bio" maxlength="300">{{ current_user.bio }}</textarea></label>
+    <label>새 비밀번호<input type="password" name="new_password" minlength="8" placeholder="변경할 때만 입력"></label>
+    <button type="submit">프로필 저장</button>
+  </form>
+</div>
+
+<h2>내 상품</h2>
+<div class="grid">
+{% for product in products %}
+  <div class="card">
+    <h3><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+    <p>상태: {{ product.status }}</p>
+    <a class="btn secondary" href="{{ url_for('product_edit', product_id=product.id) }}">수정</a>
+  </div>
+{% else %}
+  <p>등록한 상품이 없습니다.</p>
+{% endfor %}
+</div>
+
+<h2>최근 송금 내역</h2>
+<div class="card table-wrap">
+<table>
+  <tr><th>구분</th><th>상대방</th><th>금액</th><th>일시</th></tr>
+  {% for t in transfers %}
+  <tr>
+    {% if t.sender_id == current_user.id %}
+      <td>보냄</td><td>{{ t.receiver.username }}</td><td>-{{ "{:,}".format(t.amount) }}원</td>
+    {% else %}
+      <td>받음</td><td>{{ t.sender.username }}</td><td>+{{ "{:,}".format(t.amount) }}원</td>
+    {% endif %}
+    <td>{{ t.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="4">송금 내역이 없습니다.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}
