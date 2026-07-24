@@ -39,22 +39,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-환경 변수 설정 권장:
-
-Windows PowerShell:
-
-```powershell
-$env:SECRET_KEY="매우-긴-랜덤-문자열"
-$env:ADMIN_PASSWORD="관리자-초기-비밀번호"
-```
-
-macOS / Linux:
-
-```bash
-export SECRET_KEY="매우-긴-랜덤-문자열"
-export ADMIN_PASSWORD="관리자-초기-비밀번호"
-```
-
 실행:
 
 ```bash
@@ -70,8 +54,6 @@ python app.py
 - 아이디: `admin`
 - 비밀번호: 환경 변수 `ADMIN_PASSWORD` 값
 - 환경 변수가 없으면 개발용 기본값 `ChangeMe123!`
-
-실제 제출 전 반드시 관리자 비밀번호와 `SECRET_KEY`를 변경하세요.
 
 ## 데이터베이스
 
